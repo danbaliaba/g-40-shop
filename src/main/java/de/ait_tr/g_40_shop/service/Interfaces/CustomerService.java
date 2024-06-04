@@ -18,7 +18,7 @@ public interface CustomerService {
     long getActiveCustomerQuantity();
     BigDecimal getAverageCost(Long id);
     BigDecimal getAveragePrice(Long id);
-    Product addProduct(Long id);
-    void deleteProduct(Long id);
+    Product addProduct(Long customerId, Long productId);
+    void deleteProduct(Long customerId, Long productId);
     void deleteAllProduct(Long id);
 }

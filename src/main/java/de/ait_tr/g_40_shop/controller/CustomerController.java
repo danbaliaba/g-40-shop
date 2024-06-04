@@ -11,7 +11,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/customer")
+@RequestMapping("/customers")
 public class CustomerController {
 
     CustomerService service;
@@ -21,75 +21,73 @@ public class CustomerController {
     }
 
 
-    @PostMapping("/customer")
-    public Customer save(@RequestBody Customer customer){
+    @PostMapping
+    public Customer save(@RequestBody Customer customer) {
         service.save(customer);
         return customer;
     }
 
-    @GetMapping("/customer")
-    public List<Customer> get(@RequestParam(required = false) Long id){
-        if(id == null){
+    @GetMapping
+    public List<Customer> get(@RequestParam(required = false) Long id) {
+        if (id == null) {
             service.getAll();
-        }else{
+        } else {
             service.getById(id);
         }
-        return null;
+        return List.of();
     }
 
-    @PutMapping("/customer")
-    public Customer update(Customer customer){
+    @PutMapping
+    public Customer update(Customer customer) {
         service.update(customer);
         return customer;
     }
 
-    @DeleteMapping("/customer")
+    @DeleteMapping
     public void delete(@RequestParam(required = false) Long id,
-                       @RequestParam(required = false) String name){
-        if(id != null){
+                       @RequestParam(required = false) String name) {
+        if (id != null) {
             service.deleteById(id);
         } else if (name != null) {
             service.deleteByName(name);
         }
     }
 
-    @PutMapping("/customer/restore")
-    public void restore(Long id){
+    @PutMapping("/restore")
+    public void restore(Long id) {
         service.restoreById(id);
     }
 
-    @GetMapping("/customer/quantity")
-    public long getQuantity(){
+    @GetMapping("/quantity")
+    public long getQuantity() {
         return service.getActiveCustomerQuantity();
     }
 
-    @GetMapping("/customer/averageCost")
-    public BigDecimal getCost(Long id){
+    @GetMapping("/averageCost")
+    public BigDecimal getCost(Long id) {
         return service.getAverageCost(id);
     }
 
-    @GetMapping("/customer/averagePrice")
-    public BigDecimal getPrice(Long id){
+    @GetMapping("/averagePrice")
+    public BigDecimal getPrice(Long id) {
         return service.getAveragePrice(id);
     }
 
-    @PostMapping("/customer/addProduct")
-    public Product addProduct(Long id){
-        service.addProduct(id);
+    @PostMapping("/addProduct")
+    public Product addProduct(Long customerId, Long productId) {
+        service.addProduct(customerId, productId);
         return null;
     }
 
-    @DeleteMapping("/customer/deleteProduct")
-    public void deleteProduct(Long id){
-        service.deleteProduct(id);
+    @DeleteMapping("/deleteProduct")
+    public void deleteProduct(Long customerId, Long productId) {
+        service.deleteProduct(customerId, productId);
     }
 
-    @DeleteMapping("customer/deleteAllProduct")
-    public void deleteAllProduct(Long id){
+    @DeleteMapping("/deleteAllProduct")
+    public void deleteAllProduct(Long id) {
         service.deleteAllProduct(id);
     }
-
-
 
 
 }
