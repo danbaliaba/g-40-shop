@@ -1,7 +1,7 @@
 package de.ait_tr.g_40_shop.controller;
 
 
-import de.ait_tr.g_40_shop.domain.entity.Product;
+import de.ait_tr.g_40_shop.domain.dto.ProductDto;
 import de.ait_tr.g_40_shop.service.Interfaces.ProductService;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,28 +23,27 @@ public class ProductController {
     // Create product - POST - http://localhost:8080/products
 
     @PostMapping
-    public Product save(@RequestBody Product product){
-       service.save(product);
-        return product;
+    public ProductDto save(@RequestBody ProductDto product){
+       return service.save(product);
     }
 
 
     // Get product - GET - http://localhost:8080/products
 
-    @GetMapping("products")
-    public List<Product> get(@RequestParam(required = false) Long id){
+    @GetMapping
+    public List<ProductDto> get(@RequestParam(required = false) Long id){
         if(id == null){
-            service.getAllActiveProducts();
+            return service.getAllActiveProducts();
         } else{
-            service.getById(id);
+            ProductDto product = service.getById(id);
+            return product == null ? null : List.of(product);
         }
-        return null;
     }
 
     // Update product - PUT - http://localhost:8080/products
 
     @PutMapping
-    public Product update(@RequestBody Product product){
+    public ProductDto update(@RequestBody ProductDto product){
         service.update(product);
         return product;
     }
@@ -73,12 +72,12 @@ public class ProductController {
         return service.getActiveProductsQuantity();
     }
 
-    @GetMapping("/totalPrice")
+    @GetMapping("/total-price")
     public BigDecimal getTotalPrice(){
         return service.getActiveProductsTotalPrice();
     }
 
-    @GetMapping("/averagePrice")
+    @GetMapping("/average-price")
     public BigDecimal getAveragePrice(){
         return service.getActiveProductsAveragePrice();
     }

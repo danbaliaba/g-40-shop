@@ -1,7 +1,10 @@
 package de.ait_tr.g_40_shop.service;
 
+import de.ait_tr.g_40_shop.domain.dto.ProductDto;
 import de.ait_tr.g_40_shop.domain.entity.Product;
+import de.ait_tr.g_40_shop.repository.ProductRepository;
 import de.ait_tr.g_40_shop.service.Interfaces.ProductService;
+import de.ait_tr.g_40_shop.service.mapping.ProductMappingService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -9,23 +12,57 @@ import java.util.List;
 
 @Service
 public class ProductServiceImpl implements ProductService {
+
+    private final ProductRepository repository;
+    private final ProductMappingService mappingService;
+
+
+    public ProductServiceImpl(ProductRepository repository, ProductMappingService mappingService) {
+        this.repository = repository;
+        this.mappingService = mappingService;
+    }
+
+
+
     @Override
-    public Product save(Product product) {
-        return null;
+    public ProductDto save(ProductDto dto) {
+        Product entity = mappingService.mapDtoToEntity(dto);
+        repository.save(entity);
+        return mappingService.mapEntityToDto(entity);
     }
 
     @Override
-    public List<Product> getAllActiveProducts() {
-        return null;
+    public List<ProductDto> getAllActiveProducts() {
+        return repository.findAll()
+                .stream()
+                .filter(Product::isActive)
+                .map(mappingService::mapEntityToDto)
+                .toList();
+        /*
+         * List<Product> products = repository.findAll();
+         * Iterator<Product> iterator = products.iterator();
+         *
+         * while(iterator.hasNext){
+         *   if(!iterator.next.isActive()){
+         *       iterator.remove();
+         *   }
+         * }
+         *
+         * return products;
+         * */
     }
 
     @Override
-    public Product getById(Long id) {
-        return null;
+    public ProductDto getById(Long id) {
+        Product product = repository.findById(id).orElse(null);
+        if (product == null || !product.isActive()) {
+            return null;
+        }
+        return mappingService.mapEntityToDto(product);
     }
 
     @Override
-    public Product update(Product product) {
+    public ProductDto update(ProductDto product) {
         return null;
     }
 

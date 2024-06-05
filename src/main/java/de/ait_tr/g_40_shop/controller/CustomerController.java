@@ -16,7 +16,7 @@ public class CustomerController {
 
     CustomerService service;
 
-    public void setService(CustomerService service) {
+    public CustomerController(CustomerService service) {
         this.service = service;
     }
 
@@ -30,11 +30,10 @@ public class CustomerController {
     @GetMapping
     public List<Customer> get(@RequestParam(required = false) Long id) {
         if (id == null) {
-            service.getAll();
-        } else {
-            service.getById(id);
+            return service.getAll();
+        }else {
+            return List.of(service.getById(id));
         }
-        return List.of();
     }
 
     @PutMapping
@@ -63,28 +62,28 @@ public class CustomerController {
         return service.getActiveCustomerQuantity();
     }
 
-    @GetMapping("/averageCost")
+    @GetMapping("/average-cost")
     public BigDecimal getCost(Long id) {
         return service.getAverageCost(id);
     }
 
-    @GetMapping("/averagePrice")
+    @GetMapping("/average-price")
     public BigDecimal getPrice(Long id) {
         return service.getAveragePrice(id);
     }
 
-    @PostMapping("/addProduct")
+    @PostMapping("/add-product")
     public Product addProduct(Long customerId, Long productId) {
         service.addProduct(customerId, productId);
         return null;
     }
 
-    @DeleteMapping("/deleteProduct")
+    @DeleteMapping("/delete-product")
     public void deleteProduct(Long customerId, Long productId) {
         service.deleteProduct(customerId, productId);
     }
 
-    @DeleteMapping("/deleteAllProduct")
+    @DeleteMapping("/delete-all-product")
     public void deleteAllProduct(Long id) {
         service.deleteAllProduct(id);
     }
