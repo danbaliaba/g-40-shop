@@ -1,7 +1,7 @@
 package de.ait_tr.g_40_shop.controller;
 
 
-import de.ait_tr.g_40_shop.domain.entity.Customer;
+import de.ait_tr.g_40_shop.domain.dto.CustomerDto;
 import de.ait_tr.g_40_shop.domain.entity.Product;
 import de.ait_tr.g_40_shop.service.Interfaces.CustomerService;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +22,12 @@ public class CustomerController {
 
 
     @PostMapping
-    public Customer save(@RequestBody Customer customer) {
-        service.save(customer);
-        return customer;
+    public CustomerDto save(@RequestBody CustomerDto customer) {
+        return  service.save(customer);
     }
 
     @GetMapping
-    public List<Customer> get(@RequestParam(required = false) Long id) {
+    public List<CustomerDto> get(@RequestParam(required = false) Long id) {
         if (id == null) {
             return service.getAll();
         }else {
@@ -37,7 +36,7 @@ public class CustomerController {
     }
 
     @PutMapping
-    public Customer update(Customer customer) {
+    public CustomerDto update(CustomerDto customer) {
         service.update(customer);
         return customer;
     }

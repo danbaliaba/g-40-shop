@@ -2,6 +2,7 @@ package de.ait_tr.g_40_shop.domain.entity;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -61,6 +62,54 @@ public class Cart {
     @Override
     public String toString() {
         return String.format("Cart: id - %d, contains %d products", id, products == null ? 0 : products.size());
+    }
+
+    Product addProduct(Product product){
+        products.add(product);
+        return product;
+    }
+
+    List<Product> getAllActiveProducts(){
+        List<Product> productList = null;
+        for(Product product : products){
+            if(product.isActive())
+                productList.add(product);
+        }
+        return productList;
+    }
+
+    void deleteProductById(Long id){
+        products.forEach(x -> {
+            if(x.getId() == id){
+                products.remove(x);
+        }
+        });
+    }
+
+    void deleteAllProducts(){
+        products.removeAll(products);
+    }
+
+    BigDecimal getCostOfActiveProducts(){
+        BigDecimal cost = BigDecimal.valueOf(0);
+        for (Product product : products){
+            if(product.isActive()){
+                cost.add(product.getPrice());
+            }
+        }
+        return cost;
+    }
+
+    BigDecimal getAveragePriceOfProduct(){
+        BigDecimal allCost = BigDecimal.valueOf(0);
+        BigDecimal quantity = BigDecimal.valueOf(0);
+        for (Product product : products){
+            if (product.isActive()){
+                allCost.add(product.getPrice());
+                quantity.add(BigDecimal.valueOf(1));
+            }
+        }
+        return allCost.divide(quantity);
     }
 
 

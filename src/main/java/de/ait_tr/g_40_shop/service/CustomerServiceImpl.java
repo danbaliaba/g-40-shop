@@ -1,9 +1,11 @@
 package de.ait_tr.g_40_shop.service;
 
+import de.ait_tr.g_40_shop.domain.dto.CustomerDto;
 import de.ait_tr.g_40_shop.domain.entity.Customer;
 import de.ait_tr.g_40_shop.domain.entity.Product;
 import de.ait_tr.g_40_shop.repository.CustomerRepository;
 import de.ait_tr.g_40_shop.service.Interfaces.CustomerService;
+import de.ait_tr.g_40_shop.service.mapping.CustomerMappingService;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -13,39 +15,42 @@ import java.util.List;
 public class CustomerServiceImpl implements CustomerService {
 
     private CustomerRepository repository;
+    private final CustomerMappingService mappingService;
 
-    public CustomerServiceImpl(CustomerRepository repository) {
+    public CustomerServiceImpl(CustomerRepository repository, CustomerMappingService mappingService) {
         this.repository = repository;
+        this.mappingService = mappingService;
     }
 
     @Override
-    public Customer save(Customer customer) {
+    public CustomerDto save(CustomerDto dto) {
 
-        customer.setId(null);
-        customer.setActive(true);
-        return repository.save(customer);
+        Customer entity = mappingService.mapDtoToEntity(dto);
+        repository.save(entity);
+        return mappingService.mapEntityToDto(entity);
     }
 
     @Override
-    public List<Customer> getAll() {
+    public List<CustomerDto> getAll() {
         return repository.findAll()
                 .stream().
                 filter(Customer::isActive)
+                .map(mappingService::mapEntityToDto)
                 .toList();
     }
 
     @Override
-    public Customer getById(Long id) {
+    public CustomerDto getById(Long id) {
         Customer customer = repository.findById(id).orElse(null);
         if(customer == null || !customer.isActive()) {
             return null;
         }
-        return customer;
+        return mappingService.mapEntityToDto(customer);
     }
 
     @Override
-    public Customer update(Customer customer) {
-        return null;
+    public CustomerDto update(CustomerDto customer) {
+        return customer;
     }
 
     @Override
