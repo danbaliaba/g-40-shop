@@ -3,6 +3,7 @@ package de.ait_tr.g_40_shop.domain.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -70,24 +71,17 @@ public class Cart {
     }
 
     List<Product> getAllActiveProducts(){
-        List<Product> productList = null;
-        for(Product product : products){
-            if(product.isActive())
-                productList.add(product);
-        }
-        return productList;
+        return products.stream().filter(Product::isActive).toList();
     }
 
     void deleteProductById(Long id){
-        products.forEach(x -> {
-            if(x.getId() == id){
-                products.remove(x);
+        for (Product product : products){
+            products.removeIf(Product::isActive);
         }
-        });
     }
 
     void deleteAllProducts(){
-        products.removeAll(products);
+        products.clear();
     }
 
     BigDecimal getCostOfActiveProducts(){
@@ -101,15 +95,9 @@ public class Cart {
     }
 
     BigDecimal getAveragePriceOfProduct(){
-        BigDecimal allCost = BigDecimal.valueOf(0);
-        BigDecimal quantity = BigDecimal.valueOf(0);
-        for (Product product : products){
-            if (product.isActive()){
-                allCost.add(product.getPrice());
-                quantity.add(BigDecimal.valueOf(1));
-            }
-        }
-        return allCost.divide(quantity);
+        long count = products.stream().filter(Product::isActive).count();
+
+        return getCostOfActiveProducts().divide(BigDecimal.valueOf(count));
     }
 
 
