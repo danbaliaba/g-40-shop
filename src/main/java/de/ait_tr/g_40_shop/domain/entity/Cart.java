@@ -75,9 +75,7 @@ public class Cart {
     }
 
     void deleteProductById(Long id){
-        for (Product product : products){
-            products.removeIf(Product::isActive);
-        }
+        products.removeIf(product -> product.getId().equals(id));
     }
 
     void deleteAllProducts(){
