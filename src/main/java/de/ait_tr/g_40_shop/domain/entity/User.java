@@ -1,6 +1,5 @@
 package de.ait_tr.g_40_shop.domain.entity;
 
-
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,8 +16,10 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
     @Column(name = "username")
     private String username;
+
     @Column(name = "password")
     private String password;
 
@@ -29,7 +30,6 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<Role> roles;
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

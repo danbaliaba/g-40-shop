@@ -65,34 +65,34 @@ public class Cart {
         return String.format("Cart: id - %d, contains %d products", id, products == null ? 0 : products.size());
     }
 
-    Product addProduct(Product product){
+    Product addProduct(Product product) {
         products.add(product);
         return product;
     }
 
-    List<Product> getAllActiveProducts(){
+    List<Product> getAllActiveProducts() {
         return products.stream().filter(Product::isActive).toList();
     }
 
-    void deleteProductById(Long id){
+    void deleteProductById(Long id) {
         products.removeIf(product -> product.getId().equals(id));
     }
 
-    void deleteAllProducts(){
+    void deleteAllProducts() {
         products.clear();
     }
 
-    BigDecimal getCostOfActiveProducts(){
+    BigDecimal getCostOfActiveProducts() {
         BigDecimal cost = BigDecimal.valueOf(0);
-        for (Product product : products){
-            if(product.isActive()){
+        for (Product product : products) {
+            if (product.isActive()) {
                 cost.add(product.getPrice());
             }
         }
         return cost;
     }
 
-    BigDecimal getAveragePriceOfProduct(){
+    BigDecimal getAveragePriceOfProduct() {
         long count = products.stream().filter(Product::isActive).count();
 
         return getCostOfActiveProducts().divide(BigDecimal.valueOf(count));

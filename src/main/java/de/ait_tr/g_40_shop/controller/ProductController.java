@@ -31,13 +31,13 @@ public class ProductController {
     // Get product - GET - http://localhost:8080/products
 
     @GetMapping
-    public List<ProductDto> get(@RequestParam(required = false) Long id){
-        if(id == null){
-            return service.getAllActiveProducts();
-        } else{
-            ProductDto product = service.getById(id);
-            return product == null ? null : List.of(product);
-        }
+    public ProductDto getById(@RequestParam Long id) {
+        return service.getById(id);
+    }
+
+    @GetMapping("/all")
+    public List<ProductDto> getAll() {
+        return service.getAllActiveProducts();
     }
 
     // Update product - PUT - http://localhost:8080/products
