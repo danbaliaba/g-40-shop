@@ -187,7 +187,10 @@ class ProductControllerTest {
     @Order(2)
     public void negativeGettingProductByIdWithoutAuthorization(){
 
-        String url = URL_PREFIX+port+PRODUCTS_RESOURCE_NAME+REQUESTED_PARAM+testProduct.getId();
+        Product testProductEntity = productRepository.findByTitle(testProduct.getTitle()).orElse(null);
+        assertNotNull(testProductEntity, "Product is not in DB");
+
+        String url = URL_PREFIX+port+PRODUCTS_RESOURCE_NAME+REQUESTED_PARAM+testProductEntity.getId();
         HttpEntity<Void> request = new HttpEntity<>(null);
 
         ResponseEntity<ProductDto[]> response =template.exchange(url, HttpMethod.GET, request, ProductDto[].class);
@@ -199,7 +202,10 @@ class ProductControllerTest {
     @Order(3)
     public void negativeGettingProductByIdWithBasicAuthorization(){
 
-        String url = URL_PREFIX+port+PRODUCTS_RESOURCE_NAME+REQUESTED_PARAM+testProduct.getId();
+        Product testProductEntity = productRepository.findByTitle(testProduct.getTitle()).orElse(null);
+        assertNotNull(testProductEntity, "Product is not in DB");
+
+        String url = URL_PREFIX+port+PRODUCTS_RESOURCE_NAME+REQUESTED_PARAM+testProductEntity.getId();
         HttpEntity<Void> request = new HttpEntity<>(null);
         
 
@@ -215,7 +221,10 @@ class ProductControllerTest {
     @Order(4)
     public void negativeGettingProductByIdWithIncorrectToken(){
 
-        String url = URL_PREFIX+port+PRODUCTS_RESOURCE_NAME+REQUESTED_PARAM+testProduct.getId();
+        Product testProductEntity = productRepository.findByTitle(testProduct.getTitle()).orElse(null);
+        assertNotNull(testProductEntity, "Product is not in DB");
+
+        String url = URL_PREFIX+port+PRODUCTS_RESOURCE_NAME+REQUESTED_PARAM+testProductEntity.getId();
         headers.put(AUTH_HEADER_TITLE, List.of(adminAccessToken+"Invalid Access Token"));
         HttpEntity<Void> request = new HttpEntity<>(headers);
 
@@ -230,8 +239,8 @@ class ProductControllerTest {
     public void positiveGettingProductByIdWithCorrectToken(){
 
         Product testProductEntity = productRepository.findByTitle(testProduct.getTitle()).orElse(null);
-
         assertNotNull(testProductEntity, "Product is not in DB");
+
         String url = URL_PREFIX+port+PRODUCTS_RESOURCE_NAME+REQUESTED_PARAM+testProductEntity.getId();
         headers.put(AUTH_HEADER_TITLE, List.of(userAccessToken));
         HttpEntity<Void> request = new HttpEntity<>(null, headers);
