@@ -39,10 +39,17 @@ public class SecurityConfig {
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(x -> x
                         .requestMatchers(HttpMethod.GET, "/products/all").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/products").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.GET, "/products").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/refresh").permitAll()
                 )
                 .addFilterAfter(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }
+
+
+/*
+    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJCZW4iLCJleHAiOjE3MTg1Nzg4OTMsInJvbGVzIjpbeyJhdXRob3JpdHkiOiJST0xFX1VTRVIifSx7ImF1dGhvcml0eSI6IlJPTEVfQURNSU4ifV0sIm5hbWUiOiJCZW4ifQ.TSrHEL0A9OAPaNhpoXlkfycJInK-JF3VNrC9UlXns90",
+    "refreshToken": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJCZW4iLCJleHAiOjE3MjA1NjYwOTN9.AFmA01YhNC8Hq2L3yssNid_9ODcqh_Vnyd9jABUm_l0"
+* */
