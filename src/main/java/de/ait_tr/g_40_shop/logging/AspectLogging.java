@@ -129,30 +129,30 @@ public class AspectLogging {
         return result;
     }
 
-//    @Pointcut("execution(* de.ait_tr.g_40_shop.service.*(..)")
-//    public void allServiceImplVoids(){}
-//
-//    @Around("allServiceImplVoids()")
-//    public Object aroundVoidsServiceImpl(ProceedingJoinPoint joinPoint){
-//        String methodName = joinPoint.getSignature().getName();
-//        String className = joinPoint.getSignature().getClass().getSimpleName();
-//        Object[] params = joinPoint.getArgs();
-//        Object result = null;
-//
-//        logger.info("Method {} of the class {} called with args: {}", methodName,className, params);
-//
-//        try{
-//            result = joinPoint.proceed();
-//            if (result != null){
-//                logger.info("Method {} of the class {} finished with result: {}", methodName, className, result);
-//            }
-//        }catch (Throwable e){
-//            logger.info("Method {} of the class {} threw an exception: {}", methodName, className, e.getMessage());
-//        }
-//
-//
-//        logger.info("Method {} of the class {} finished its work", methodName, className);
-//
-//        return result;
-//    }
+    @Pointcut("execution(* de.ait_tr.g_40_shop.service..*(..))")
+    public void allServiceImplVoids(){}
+
+    @Around("allServiceImplVoids()")
+    public Object aroundVoidsServiceImpl(ProceedingJoinPoint joinPoint){
+        String methodName = joinPoint.getSignature().getName();
+        String className = joinPoint.getSignature().getClass().getSimpleName();
+        Object[] params = joinPoint.getArgs();
+        Object result = null;
+
+        logger.info("Method {} of the class {} called with args: {}", methodName,className, params);
+
+        try{
+            result = joinPoint.proceed();
+            if (result != null){
+                logger.info("Method {} of the class {} finished with result: {}", methodName, className, result);
+            }
+        }catch (Throwable e){
+            logger.info("Method {} of the class {} threw an exception: {}", methodName, className, e.getMessage());
+        }
+
+
+        logger.info("Method {} of the class {} finished its work", methodName, className);
+
+        return result;
+    }
 }
