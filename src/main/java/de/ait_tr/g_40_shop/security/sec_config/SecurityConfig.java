@@ -1,6 +1,7 @@
 package de.ait_tr.g_40_shop.security.sec_config;
 
 import de.ait_tr.g_40_shop.security.sec_filter.TokenFilter;
+import org.hibernate.mapping.Any;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -38,10 +39,11 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(x -> x
-                        .requestMatchers(HttpMethod.GET, "/products/all").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/products").hasAnyRole("USER", "ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/refresh").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/products/all").permitAll()
+//                        .requestMatchers(HttpMethod.GET, "/products").hasAnyRole("USER", "ADMIN")
+//                        .requestMatchers(HttpMethod.POST, "/products").hasRole("ADMIN")
+//                        .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/refresh").permitAll()
+                                .anyRequest().permitAll()
                 )
                 .addFilterAfter(filter, UsernamePasswordAuthenticationFilter.class)
                 .build();
