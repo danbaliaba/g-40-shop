@@ -24,14 +24,13 @@ public class AspectLogging {
     public void saveProduct(){}
 
 
-
     // Advice - это дополнительная логика, которая и будет внедрена к основной
     // Before - это адвайс, логика которого внедряется перед основной логикой
-//    @Before("saveProduct()")
-//    public void beforeSavingProduct(){
-//        logger.info("Method save of the class ProductServiceImpl called");
-//
-//    }
+    @Before("saveProduct()")
+    public void beforeSavingProduct(){
+        logger.info("Method save of the class ProductServiceImpl called");
+
+    }
 
     // Вариант метода с перехватом входящего входящего параметра
     @Before("saveProduct()")
@@ -41,7 +40,7 @@ public class AspectLogging {
 
     }
 
-    // After - это адвайс логика которого внедряется после выполнения метода
+//    // After - это адвайс логика которого внедряется после выполнения метода
     @After("saveProduct()")
     public void afterSavingProduct(){
         logger.info("Method save of the class ProductServiceImpl finished his its work");
@@ -52,15 +51,15 @@ public class AspectLogging {
     public void getProductById(){}
 
 
-//    @AfterReturning("getProductById()")
-//    public void afterReturningProduct(){
-//        logger.info("Method get by Id of the class ProductServiceImpl successfully returned result");
-//    }
-//
-//    @AfterThrowing("getProductById()")
-//    public void afterThrowingIfProductNotFound(){
-//        logger.info("Method getById of the class ProductServiceImpl threw an exception");
-//    }
+    @AfterReturning("getProductById()")
+    public void afterReturningProduct(){
+        logger.info("Method get by Id of the class ProductServiceImpl successfully returned result");
+    }
+
+    @AfterThrowing("getProductById()")
+    public void afterThrowingIfProductNotFound(){
+        logger.info("Method getById of the class ProductServiceImpl threw an exception");
+    }
 
 
     // Вариант предыдущего адвайса, который позволяет работать с объектом,
@@ -83,11 +82,11 @@ public class AspectLogging {
     public void getAllProducts(){}
 
     // Around - адвайс, который позволяет внедрить дополнительную логику вокруг целевой логики, то есть
-        //          и до, и после, и даже вместо целевой логики, подменяя её действительный результат.
-        // Здесь мы внедряем логику и до, и после целевой логики, а также перехватываем фактический результат,
-        // который возвращает целевой метод и применяем к списку продуктов дополнительную фильтрацию плюсом
-        // к той фильтрации, которую производит сам целевой метод.
-        // Также имеем возможность перехватывать исключения, которые выбрасывает целевой метод и обрабатывать их.
+    //          и до, и после, и даже вместо целевой логики, подменяя её действительный результат.
+    // Здесь мы внедряем логику и до, и после целевой логики, а также перехватываем фактический результат,
+    // который возвращает целевой метод и применяем к списку продуктов дополнительную фильтрацию плюсом
+    // к той фильтрации, которую производит сам целевой метод.
+    // Также имеем возможность перехватывать исключения, которые выбрасывает целевой метод и обрабатывать их.
 
 
     @Around("getAllProducts()")
@@ -109,7 +108,51 @@ public class AspectLogging {
         return result;
     }
 
+    @Pointcut("execution(* de.ait_tr.g_40_shop.service.ProductServiceImpl.*(..))")
+    public void productServiceImplVoids() {}
 
+    @Around("productServiceImplVoids()")
+    public Object aroundVoidsProductServiceImpl(ProceedingJoinPoint joinPoint) {
+        String methodName = joinPoint.getSignature().getName();
+        Object[] methodArgs = joinPoint.getArgs();
+        Object result = null;
 
+        logger.info("Method {} of the class ProductServiceImpl called with args: {}", methodName, methodArgs);
 
+        try{
+            result = joinPoint.proceed();
+        }catch (Throwable e){
+            logger.info("Method {} of the class ProductServiceImpl threw an exception: {}",methodName, e.getMessage());
+        }
+
+        logger.info("Method {} of the class ProductServiceImpl finished its work", methodName);
+        return result;
+    }
+
+//    @Pointcut("execution(* de.ait_tr.g_40_shop.service.*(..)")
+//    public void allServiceImplVoids(){}
+//
+//    @Around("allServiceImplVoids()")
+//    public Object aroundVoidsServiceImpl(ProceedingJoinPoint joinPoint){
+//        String methodName = joinPoint.getSignature().getName();
+//        String className = joinPoint.getSignature().getClass().getSimpleName();
+//        Object[] params = joinPoint.getArgs();
+//        Object result = null;
+//
+//        logger.info("Method {} of the class {} called with args: {}", methodName,className, params);
+//
+//        try{
+//            result = joinPoint.proceed();
+//            if (result != null){
+//                logger.info("Method {} of the class {} finished with result: {}", methodName, className, result);
+//            }
+//        }catch (Throwable e){
+//            logger.info("Method {} of the class {} threw an exception: {}", methodName, className, e.getMessage());
+//        }
+//
+//
+//        logger.info("Method {} of the class {} finished its work", methodName, className);
+//
+//        return result;
+//    }
 }

@@ -56,6 +56,7 @@ class ProductControllerTest {
     private final String LOGIN_ENDPOINT = "/login";
     private final String ALL_ENDPOINT = "/all";
     private final String REQUESTED_PARAM = "?id=";
+    private Long id;
 
     private String BEARER_PREFIX = "Bearer ";
     private String adminAccessToken;
@@ -180,6 +181,11 @@ class ProductControllerTest {
         ResponseEntity<ProductDto> response = template.exchange(url, HttpMethod.POST, request, ProductDto.class);
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Response has unexpected status");
         assertTrue(response.hasBody(), "Response has unexpected body");
+        assertEquals(response.getBody().getTitle(), testProduct.getTitle(), "Response has unexpected title");
+        assertEquals(response.getBody().getPrice(), testProduct.getPrice(), "Response has unexpected price");
+
+        id = response.getBody().getId();
+        assertNotNull(id, "Response has unexpected id");
 
     }
 
@@ -238,18 +244,20 @@ class ProductControllerTest {
     @Order(5)
     public void positiveGettingProductByIdWithCorrectToken(){
 
-        Product testProductEntity = productRepository.findByTitle(testProduct.getTitle()).orElse(null);
-        assertNotNull(testProductEntity, "Product is not in DB");
+//        Product testProductEntity = productRepository.findByTitle(testProduct.getTitle()).orElse(null);
+//        assertNotNull(testProductEntity, "Product is not in DB");
 
-        String url = URL_PREFIX+port+PRODUCTS_RESOURCE_NAME+REQUESTED_PARAM+testProductEntity.getId();
+        String url = URL_PREFIX+port+PRODUCTS_RESOURCE_NAME+REQUESTED_PARAM+id;
         headers.put(AUTH_HEADER_TITLE, List.of(userAccessToken));
         HttpEntity<Void> request = new HttpEntity<>(null, headers);
 
         ResponseEntity<ProductDto> response = template.exchange(url, HttpMethod.GET, request, ProductDto.class);
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Response has unexpected status");
         assertTrue(response.hasBody(), "Response has unexpected body");
+        assertEquals(response.getBody().getTitle(), testProduct.getTitle(), "Response has unexpected title");
+        assertEquals(response.getBody().getPrice(), testProduct.getPrice(), "Response has unexpected price");
 
-        productRepository.deleteById(testProductEntity.getId());
+        productRepository.deleteById(id);
     }
 
 
