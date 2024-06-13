@@ -2,6 +2,7 @@ package de.ait_tr.g_40_shop.service;
 
 import de.ait_tr.g_40_shop.domain.dto.ProductDto;
 import de.ait_tr.g_40_shop.domain.entity.Product;
+import de.ait_tr.g_40_shop.exception_handling.exceptions.FirstTestException;
 import de.ait_tr.g_40_shop.repository.ProductRepository;
 import de.ait_tr.g_40_shop.service.Interfaces.ProductService;
 import de.ait_tr.g_40_shop.service.mapping.ProductMappingService;
@@ -15,7 +16,7 @@ import java.util.List;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
+//    private Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     private final ProductRepository repository;
     private final ProductMappingService mappingService;
@@ -78,7 +79,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = repository.findById(id).orElse(null);
 
         if (product == null || !product.isActive()) {
-            throw new RuntimeException("Product not found");
+            throw new FirstTestException(String.format("Product with %d not found", id));
         }
         return mappingService.mapEntityToDto(product);
     }

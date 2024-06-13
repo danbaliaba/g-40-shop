@@ -234,8 +234,6 @@ class ProductControllerTest {
     @Order(5)
     public void positiveGettingProductByIdWithCorrectToken(){
 
-        Long idToDelete = ProductControllerTest.id;
-
         String url = URL_PREFIX+port+PRODUCTS_RESOURCE_NAME+REQUESTED_PARAM+ProductControllerTest.id;
         headers.put(AUTH_HEADER_TITLE, List.of(userAccessToken));
         HttpEntity<Void> request = new HttpEntity<>(null, headers);

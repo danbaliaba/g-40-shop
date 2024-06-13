@@ -2,7 +2,10 @@ package de.ait_tr.g_40_shop.controller;
 
 
 import de.ait_tr.g_40_shop.domain.dto.ProductDto;
+import de.ait_tr.g_40_shop.exception_handling.Response;
+import de.ait_tr.g_40_shop.exception_handling.exceptions.FirstTestException;
 import de.ait_tr.g_40_shop.service.Interfaces.ProductService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -83,5 +86,15 @@ public class ProductController {
     }
 
 
+    // 1 способ обработки исключений
+    // ПЛЮС -  точечно настраиваем обработчик ошибок именно для данного контроллера,
+    //         если нам требуется разная логика обработки исключений в разных контроллерах
+    // МИНУС - если нам не требуется разная логика для разных контроллеров,
+    //         придётся создавать такие одинаковые обработчики в каждом контроллере
+    @ExceptionHandler(FirstTestException.class)
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Response handleException(FirstTestException e){
+        return new Response(e.getMessage());
+    }
 
 }
