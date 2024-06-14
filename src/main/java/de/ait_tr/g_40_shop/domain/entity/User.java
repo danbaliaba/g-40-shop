@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.naming.Name;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
@@ -22,6 +23,12 @@ public class User implements UserDetails {
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "active")
+    private boolean active;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
@@ -54,8 +61,36 @@ public class User implements UserDetails {
         this.username = username;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
     }
 
     @Override
@@ -63,17 +98,17 @@ public class User implements UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(roles, user.roles);
+        return active == user.active && Objects.equals(id, user.id) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(roles, user.roles);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, username, password, roles);
+        return Objects.hash(id, username, password, email, active, roles);
     }
 
     @Override
     public String toString() {
-        return String.format("User: id - %d, username - %s, role - %s",
-                id, username, roles == null ? "empty" : roles);
+        return String.format("User: id - %d, username - %s, role - %s, email - %s, active - %s",
+                id, username, email, active ? "yes" : "no", roles == null ? "empty" : roles);
     }
 }
