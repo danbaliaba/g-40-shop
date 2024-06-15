@@ -1,6 +1,7 @@
 package de.ait_tr.g_40_shop.security.sec_controller;
 
 import de.ait_tr.g_40_shop.domain.entity.User;
+import de.ait_tr.g_40_shop.exception_handling.Response;
 import de.ait_tr.g_40_shop.security.sec_dto.RefreshRequestDto;
 import de.ait_tr.g_40_shop.security.sec_dto.TokenResponseDto;
 import de.ait_tr.g_40_shop.security.sec_service.AuthService;

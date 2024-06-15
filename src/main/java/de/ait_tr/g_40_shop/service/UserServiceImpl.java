@@ -48,12 +48,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void register(User user) {
-        user.setId(null);
-        user.setPassword(encoder.encode(user.getPassword()));
-        user.setActive(false);
-        user.setRoles(Set.of(roleService.getRoleUser()));
 
-        repository.save(user);
-        emailService.sendConfirmationEmail(user);
+            user.setId(null);
+            user.setPassword(encoder.encode(user.getPassword()));
+            user.setActive(false);
+            user.setRoles(Set.of(roleService.getRoleUser()));
+
+            repository.save(user);
+            emailService.sendConfirmationEmail(user);
+
     }
 }

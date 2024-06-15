@@ -109,6 +109,6 @@ public class User implements UserDetails {
     @Override
     public String toString() {
         return String.format("User: id - %d, username - %s, role - %s, email - %s, active - %s",
-                id, username, email, active ? "yes" : "no", roles == null ? "empty" : roles);
+                id, username, active ? "yes" : "no",  email, roles == null ? "empty" : roles);
     }
 }

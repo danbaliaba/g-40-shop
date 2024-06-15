@@ -1,5 +1,7 @@
 package de.ait_tr.g_40_shop.security.sec_filter;
 
+import de.ait_tr.g_40_shop.domain.entity.User;
+import de.ait_tr.g_40_shop.repository.UserRepository;
 import de.ait_tr.g_40_shop.security.AuthInfo;
 import de.ait_tr.g_40_shop.security.sec_service.TokenService;
 import io.jsonwebtoken.Claims;
@@ -17,10 +19,13 @@ import java.io.IOException;
 @Component
 public class TokenFilter extends GenericFilterBean {
 
-    private TokenService service;
+    private final TokenService service;
 
-    public TokenFilter(TokenService service) {
+    private final UserRepository userRepository;
+
+    public TokenFilter(TokenService service, UserRepository userRepository) {
         this.service = service;
+        this.userRepository = userRepository;
     }
 
     @Override
