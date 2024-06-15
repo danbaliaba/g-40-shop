@@ -15,10 +15,8 @@ import java.util.UUID;
 public class ConfirmationServiceImpl implements ConfirmationService {
 
     private final ConfirmationCodeRepository repository;
-    private final UserRepository userRepository;
-    public ConfirmationServiceImpl(ConfirmationCodeRepository repository, UserRepository userRepository) {
+    public ConfirmationServiceImpl(ConfirmationCodeRepository repository) {
         this.repository = repository;
-        this.userRepository = userRepository;
     }
 
     @Override
@@ -30,19 +28,5 @@ public class ConfirmationServiceImpl implements ConfirmationService {
         repository.save(confirmationCode);
 
         return code;
-    }
-
-    @Override
-    public void confirmAccount(String code) {
-
-        ConfirmationCode entity = repository.findByCode(code).orElse(null);
-        LocalDateTime now = LocalDateTime.now();
-        if (entity!= null && now.isBefore(entity.getExpired())){
-            User user = userRepository.findById(entity.getUser().getId()).orElse(null);
-            if (user!=null){
-                user.setActive(true);
-                userRepository.save(user);
-            }
-        }
     }
 }

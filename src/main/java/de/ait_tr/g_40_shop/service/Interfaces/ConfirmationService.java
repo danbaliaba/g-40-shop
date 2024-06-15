@@ -6,8 +6,4 @@ import de.ait_tr.g_40_shop.exception_handling.Response;
 public interface ConfirmationService {
 
     String generateConfirmationCode(User user);
-
-    void confirmAccount(String code);
-
-
 }

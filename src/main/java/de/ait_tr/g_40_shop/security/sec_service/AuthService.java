@@ -34,7 +34,7 @@ public class AuthService {
         if (passwordEncoder.matches(inboundUser.getPassword(), foundUser.getPassword()))
         {
             if (!foundUser.isActive()){
-                return new TokenResponseDto("your account", "is inactive");
+                throw  new RuntimeException("your account is inactive");
             }
             String accessToken = tokenService.generateAccessToken(foundUser);
             String refreshToken = tokenService.generateRefreshToken(foundUser);

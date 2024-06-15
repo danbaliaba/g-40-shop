@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.*;
 public class RegistrationController {
 
     private final UserService service;
-    private final ConfirmationService confirmationService;
 
-    public RegistrationController(UserService service, ConfirmationService confirmationService) {
+    public RegistrationController(UserService service) {
         this.service = service;
-        this.confirmationService = confirmationService;
     }
 
     @PostMapping
@@ -30,9 +28,7 @@ public class RegistrationController {
     @GetMapping
     public Response activation(@RequestParam String code) {
 
-        if (code != null) {
-            confirmationService.confirmAccount(code);
-        }
+        service.confirmAccount(code);
 
         return new Response("Account is now active");
 
