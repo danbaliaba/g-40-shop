@@ -3,7 +3,9 @@ package de.ait_tr.g_40_shop.service;
 import de.ait_tr.g_40_shop.domain.entity.ConfirmationCode;
 import de.ait_tr.g_40_shop.domain.entity.User;
 import de.ait_tr.g_40_shop.repository.ConfirmationCodeRepository;
+import de.ait_tr.g_40_shop.repository.UserRepository;
 import de.ait_tr.g_40_shop.service.Interfaces.ConfirmationService;
+import de.ait_tr.g_40_shop.service.Interfaces.EmailService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,7 +15,6 @@ import java.util.UUID;
 public class ConfirmationServiceImpl implements ConfirmationService {
 
     private final ConfirmationCodeRepository repository;
-
     public ConfirmationServiceImpl(ConfirmationCodeRepository repository) {
         this.repository = repository;
     }

@@ -31,12 +31,17 @@ public class AuthService {
         String username = inboundUser.getUsername();
         User foundUser = (User) userService.loadUserByUsername(username);
 
-        if (passwordEncoder.matches(inboundUser.getPassword(), foundUser.getPassword())) {
+        if (passwordEncoder.matches(inboundUser.getPassword(), foundUser.getPassword()))
+        {
+            if (!foundUser.isActive()){
+                throw  new RuntimeException("your account is inactive");
+            }
             String accessToken = tokenService.generateAccessToken(foundUser);
             String refreshToken = tokenService.generateRefreshToken(foundUser);
             refreshStorage.put(username, refreshToken);
             return new TokenResponseDto(accessToken, refreshToken);
-        } else {
+        }
+        else {
             throw new AuthException("Password is incorrect");
         }
     }

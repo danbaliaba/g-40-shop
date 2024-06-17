@@ -2,14 +2,12 @@ package de.ait_tr.g_40_shop.service;
 
 import de.ait_tr.g_40_shop.domain.dto.ProductDto;
 import de.ait_tr.g_40_shop.domain.entity.Product;
-import de.ait_tr.g_40_shop.exception_handling.exceptions.FirstTestException;
-import de.ait_tr.g_40_shop.exception_handling.exceptions.FourthTestException;
-import de.ait_tr.g_40_shop.exception_handling.exceptions.ThirdTestException;
+import de.ait_tr.g_40_shop.exception_handling.exceptions.AlreadyExistingProductException;
+import de.ait_tr.g_40_shop.exception_handling.exceptions.DeletedProductException;
+import de.ait_tr.g_40_shop.exception_handling.exceptions.ProductNotFoundException;
 import de.ait_tr.g_40_shop.repository.ProductRepository;
 import de.ait_tr.g_40_shop.service.Interfaces.ProductService;
 import de.ait_tr.g_40_shop.service.mapping.ProductMappingService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -34,12 +32,11 @@ public class ProductServiceImpl implements ProductService {
     public ProductDto save(ProductDto dto) {
 
         Product entity = mappingService.mapDtoToEntity(dto);
+        Product dbEntity = repository.findByTitle(dto.getTitle()).orElse(null);
+        if(dbEntity != null)
+            throw new AlreadyExistingProductException(String.format("Product with title %s already exist", dbEntity.getTitle()));
+        repository.save(entity);
 
-        try{
-            repository.save(entity);
-        }catch (Exception e){
-            throw new FourthTestException(e.getMessage());
-        }
         return mappingService.mapEntityToDto(entity);
     }
 
@@ -85,8 +82,11 @@ public class ProductServiceImpl implements ProductService {
 
         Product product = repository.findById(id).orElse(null);
 
-        if (product == null || !product.isActive()) {
-            throw new ThirdTestException(String.format("Product with id %d not found", id));
+        if (product == null ) {
+            throw new ProductNotFoundException(String.format("Product with id %d not found", id));
+        }
+        else if (!product.isActive()){
+            throw new DeletedProductException(String.format("Product with id %d is deleted", id));
         }
         return mappingService.mapEntityToDto(product);
     }
@@ -99,6 +99,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteById(Long id) {
 
+        Product product = repository.findById(id).orElse(null);
+        if (product == null ) {
+            throw new ProductNotFoundException(String.format("Product with id %d not found", id));
+        }
+        else if (!product.isActive()){
+            throw new DeletedProductException(String.format("Product with id %d is deleted", id));
+        }
+        product.setActive(true);
 
     }
 
