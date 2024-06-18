@@ -7,11 +7,11 @@ import de.ait_tr.g_40_shop.repository.UserRepository;
 import de.ait_tr.g_40_shop.service.Interfaces.EmailService;
 import de.ait_tr.g_40_shop.service.Interfaces.RoleService;
 import de.ait_tr.g_40_shop.service.Interfaces.UserService;
-import jakarta.transaction.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Set;

@@ -1,14 +1,17 @@
 package de.ait_tr.g_40_shop.service;
 
 import de.ait_tr.g_40_shop.domain.dto.ProductDto;
+import de.ait_tr.g_40_shop.domain.dto.ProductSupplyDto;
 import de.ait_tr.g_40_shop.domain.entity.Product;
 import de.ait_tr.g_40_shop.exception_handling.exceptions.AlreadyExistingProductException;
 import de.ait_tr.g_40_shop.exception_handling.exceptions.DeletedProductException;
 import de.ait_tr.g_40_shop.exception_handling.exceptions.ProductNotFoundException;
+import de.ait_tr.g_40_shop.exception_handling.exceptions.ProductWithTitleNotFoundException;
 import de.ait_tr.g_40_shop.repository.ProductRepository;
 import de.ait_tr.g_40_shop.service.Interfaces.ProductService;
 import de.ait_tr.g_40_shop.service.mapping.ProductMappingService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -80,14 +83,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDto getById(Long id) {
 
-        Product product = repository.findById(id).orElse(null);
+        Product product = repository.findById(id).orElseThrow(() -> new ProductNotFoundException(String.format("Product with id %d not found", id)));
 
-        if (product == null ) {
-            throw new ProductNotFoundException(String.format("Product with id %d not found", id));
-        }
-        else if (!product.isActive()){
+        if (!product.isActive()){
             throw new DeletedProductException(String.format("Product with id %d is deleted", id));
         }
+
         return mappingService.mapEntityToDto(product);
     }
 
@@ -99,15 +100,33 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteById(Long id) {
 
-        Product product = repository.findById(id).orElse(null);
-        if (product == null ) {
-            throw new ProductNotFoundException(String.format("Product with id %d not found", id));
-        }
-        else if (!product.isActive()){
+        Product product = repository.findById(id).orElseThrow(() -> new ProductNotFoundException(String.format("Product with id %d not found", id)));
+
+        if (!product.isActive()){
             throw new DeletedProductException(String.format("Product with id %d is deleted", id));
         }
         product.setActive(true);
 
+    }
+
+    @Override
+    @Transactional
+    public void attachImage(String imageUrl, String productTitle) {
+
+        Product product = repository.findByTitle(productTitle).orElseThrow(
+//                () -> new ProductNotFoundException(String.format("Product with title %s not found", productTitle))
+                () -> new ProductWithTitleNotFoundException(productTitle)
+        );
+
+        product.setImage(imageUrl);
+    }
+
+    @Override
+    public List<ProductSupplyDto> getProductsForSupply() {
+        return repository.findAll()
+                .stream().filter(Product::isActive)
+                .map(mappingService::mapEntityToSupplyDto)
+                .toList();
     }
 
     @Override
@@ -134,4 +153,5 @@ public class ProductServiceImpl implements ProductService {
     public BigDecimal getActiveProductsAveragePrice() {
         return null;
     }
+
 }

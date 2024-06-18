@@ -1,10 +1,7 @@
 package de.ait_tr.g_40_shop.exception_handling;
 
 
-import de.ait_tr.g_40_shop.exception_handling.exceptions.AlreadyExistingProductException;
-import de.ait_tr.g_40_shop.exception_handling.exceptions.DeletedProductException;
-import de.ait_tr.g_40_shop.exception_handling.exceptions.FourthTestException;
-import de.ait_tr.g_40_shop.exception_handling.exceptions.ProductNotFoundException;
+import de.ait_tr.g_40_shop.exception_handling.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -42,6 +39,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DeletedProductException.class)
     public ResponseEntity<Response> handleException(DeletedProductException e){
+        Response response = new Response(e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ProductWithTitleNotFoundException.class)
+    public ResponseEntity<Response> handleException(ProductWithTitleNotFoundException e){
         Response response = new Response(e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
