@@ -14,24 +14,24 @@ import java.util.List;
 @RequestMapping("/customers")
 public class CustomerController {
 
-    CustomerService service;
+    private final CustomerService service;
 
     public CustomerController(CustomerService service) {
         this.service = service;
     }
-
-
     @PostMapping
     public CustomerDto save(@RequestBody CustomerDto customer) {
+
         return  service.save(customer);
     }
 
     @GetMapping
     public List<CustomerDto> get(@RequestParam(required = false) Long id) {
         if (id == null) {
-            return service.getAll();
+            return service.getAllActiveCustomers();
         }else {
-            return List.of(service.getById(id));
+            CustomerDto customer = service.getActiveCustomerById(id);
+            return customer == null ? null : List.of(customer);
         }
     }
 
@@ -52,39 +52,40 @@ public class CustomerController {
     }
 
     @PutMapping("/restore")
-    public void restore(Long id) {
+    public void restore(@RequestParam Long id) {
         service.restoreById(id);
     }
 
-    @GetMapping("/quantity")
-    public long getQuantity() {
-        return service.getActiveCustomerQuantity();
+    @GetMapping("/number")
+    public long getCustomersNumber() {
+        return service.getActiveCustomersNumber();
     }
 
-    @GetMapping("/average-cost")
-    public BigDecimal getCost(Long id) {
-        return service.getAverageCost(id);
+    @GetMapping("/cart-cost")
+    public BigDecimal getCartTotalCost(@RequestParam Long customerId) {
+        return service.getCartTotalCost(customerId);
     }
 
-    @GetMapping("/average-price")
-    public BigDecimal getPrice(Long id) {
-        return service.getAveragePrice(id);
+    @GetMapping("/avg-product-cost")
+    public BigDecimal getAverageProductCost(@RequestParam Long customerId) {
+
+        return service.getAverageProductCost(customerId);
     }
 
     @PostMapping("/add-product")
-    public Product addProduct(Long customerId, Long productId) {
-        service.addProduct(customerId, productId);
+    public Product addProduct(@RequestParam Long customerId,@RequestParam Long productId) {
+        service.addProductToCustomersCart(customerId, productId);
         return null;
     }
 
     @DeleteMapping("/delete-product")
-    public void deleteProduct(Long customerId, Long productId) {
-        service.deleteProduct(customerId, productId);
+    public void deleteProduct(@RequestParam Long customerId,@RequestParam Long productId) {
+        service.removeProductFromCustomersCart(customerId, productId);
     }
 
-    @DeleteMapping("/delete-all-product")
-    public void deleteAllProduct(Long id) {
-        service.deleteAllProduct(id);
+    @DeleteMapping("/clear-cart")
+    public void clearCart(@RequestParam Long id) {
+        service.clearCart(id);
     }
 
 

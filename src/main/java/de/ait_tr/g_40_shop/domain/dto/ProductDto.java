@@ -10,6 +10,15 @@ public class ProductDto {
     private Long id;
     private String title;
     private BigDecimal price;
+    private int quantity;
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
     public Long getId() {
         return id;

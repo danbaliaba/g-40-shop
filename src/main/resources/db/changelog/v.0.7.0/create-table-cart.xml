@@ -9,21 +9,19 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
 
 
-    <changeSet id="create-table-customer" author="Daniil">
-        <createTable tableName="customer">
+    <changeSet id="create-table-cart" author="Daniil">
+
+        <createTable tableName="cart">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true"/>
             </column>
-            
-            <column name="name" type="varchar(64)">
+
+            <column name="customer_id" type="bigint">
                 <constraints nullable="false" unique="true"/>
             </column>
 
-            <column name="active" type="boolean">
-                <constraints nullable="false"/>
-            </column>
-
         </createTable>
+
     </changeSet>
 
 

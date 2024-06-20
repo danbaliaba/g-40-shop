@@ -1,14 +1,17 @@
 package de.ait_tr.g_40_shop.domain.entity;
 
 import jakarta.persistence.*;
+import org.springframework.security.core.parameters.P;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
 
-//@Entity
+@Entity
 @Table(name = "cart")
 public class Cart {
 
@@ -17,11 +20,17 @@ public class Cart {
     @Column(name = "id")
     private Long id;
 
+    @OneToOne
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
+    @ManyToMany
+    @JoinTable(
+            name = "cart_product",
+            joinColumns = @JoinColumn(name = "cart_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
     private List<Product> products;
-
-    // TODO - функционал корзины
 
     public Long getId() {
         return id;
@@ -65,37 +74,51 @@ public class Cart {
         return String.format("Cart: id - %d, contains %d products", id, products == null ? 0 : products.size());
     }
 
-    Product addProduct(Product product) {
-        products.add(product);
-        return product;
+    public void addProduct(Product product) {
+        if (product.isActive())
+            products.add(product);
     }
 
-    List<Product> getAllActiveProducts() {
+    public List<Product> getAllActiveProducts() {
+
         return products.stream().filter(Product::isActive).toList();
     }
 
-    void deleteProductById(Long id) {
-        products.removeIf(product -> product.getId().equals(id));
+    public void removeProductById(Long id) {
+
+        Iterator<Product> iterator = products.iterator();
+        while (iterator.hasNext()) {
+            if (iterator.next().getId().equals(id)) {
+                iterator.remove();
+                break;
+            }
+        }
+
     }
 
-    void deleteAllProducts() {
+    public void clear() {
         products.clear();
     }
 
-    BigDecimal getCostOfActiveProducts() {
-        BigDecimal cost = BigDecimal.valueOf(0);
-        for (Product product : products) {
-            if (product.isActive()) {
-                cost.add(product.getPrice());
-            }
-        }
-        return cost;
+    public BigDecimal getCartTotalCost() {
+//        BigDecimal cost = BigDecimal.valueOf(0);
+//        for (Product product : products) {
+//            if (product.isActive()) {
+//                cost.add(product.getPrice());
+//            }
+//        }
+//        return cost;
+
+        return products.stream().filter(Product::isActive)
+                .map(Product::getPrice)
+                .reduce(BigDecimal::add)
+                .orElse(new BigDecimal(0));
     }
 
-    BigDecimal getAveragePriceOfProduct() {
+    public BigDecimal getAverageProductCost() {
         long count = products.stream().filter(Product::isActive).count();
 
-        return getCostOfActiveProducts().divide(BigDecimal.valueOf(count));
+        return count == 0 ? BigDecimal.ZERO : getCartTotalCost().divide(new BigDecimal(count), RoundingMode.DOWN);
     }
 
 

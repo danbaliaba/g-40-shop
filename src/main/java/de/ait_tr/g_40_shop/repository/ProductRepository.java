@@ -9,4 +9,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     Optional<Product> findByTitle(String title);
 
+    void deleteByTitle(String title);
+
 }

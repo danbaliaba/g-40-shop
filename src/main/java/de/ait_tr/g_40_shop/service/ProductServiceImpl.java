@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Service
@@ -93,8 +94,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductDto update(ProductDto product) {
-        return null;
+        Product productDB = repository.findById(product.getId()).orElseThrow(() -> new ProductNotFoundException(String.format("Product with id %d not found", product.getId())));
+        productDB.setPrice(product.getPrice());
+        productDB.setQuantity(product.getQuantity());
+        return mappingService.mapEntityToDto(productDB);
     }
 
     @Override
@@ -131,27 +136,30 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void deleteByTitle(String title) {
-
+        repository.deleteByTitle(title);
     }
 
     @Override
+    @Transactional
     public void restoreById(Long id) {
-
+        Product product = repository.findById(id).orElseThrow(() -> new RuntimeException(String.format("Product with id %d not found", id)));
+        if (!product.isActive())
+            product.setActive(true);
     }
 
     @Override
     public long getActiveProductsQuantity() {
-        return 0;
+        return repository.findAll().stream().filter(Product::isActive).count();
     }
 
     @Override
     public BigDecimal getActiveProductsTotalPrice() {
-        return null;
+        return new BigDecimal(repository.findAll().stream().filter(Product::isActive).map(Product::getPrice).count());
     }
 
     @Override
     public BigDecimal getActiveProductsAveragePrice() {
-        return null;
+        return getActiveProductsTotalPrice().divide(new BigDecimal(repository.findAll().stream().filter(Product::isActive).count()), RoundingMode.DOWN);
     }
 
 }
